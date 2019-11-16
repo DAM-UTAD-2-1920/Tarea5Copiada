@@ -2,51 +2,51 @@ package ejercicio;
 
 import java.util.HashSet;
 
-public class Jugador extends Thread {
+class Jugador extends Thread {
 	final int TOTAL_CARTON = 5;
 	final int TOTAL_BOMBO = 10;
-	int id;
+	int idJugador;
 	HashSet<Integer> carton;
 	Bombo b;
 
-	Jugador(int id, Bombo b) {
+	public Jugador(int idJugador, Bombo b) {
 		this.b = b;
-		this.id = id;
+		this.idJugador = idJugador;
 		carton = new HashSet<Integer>();
 		while (carton.size() < TOTAL_CARTON)
 			carton.add((int) Math.floor(Math.random() * TOTAL_BOMBO) + 1);
-		System.out.println("jugador: " + id + " tiene: " + carton);
+		System.out.println(" EL JUGADOR " + idJugador + " TIENE EL CARTON " + carton);
 	}
 
-	void printC() {
-		System.out.print("a jugador " + id + " le faltan: ");
+	public void imprimeCarton() {
+		System.out.print("Pendientes jugador " + idJugador + ": ");
 		for (Integer integer : carton)
 			System.out.print(integer + " ");
 		System.out.println();
 	}
-	
+
 	public void run() {
 		while (carton.size() > 0) {
-			b.query();
-			System.out.println("jugador " + id + " tiene su turno");
-			lessN(b.last);
-			for (Integer integer : b.hash) {
+			b.consultar();
+			System.out.println("El jugador  " + idJugador + "  va a jugar ");
+			tacharNum(b.ultNumero);
+			for (Integer integer : b.bombo) {
 				carton.remove(integer);
 			}
-			System.out.println("jugador " + id + " ha jugado ");
-			printC();
+			System.out.println("El jugador  " + idJugador + "  ha jugado ");
+			imprimeCarton();
 		}
-		System.out.println("jugador: " + id + " consigue el bingo");
-
+		System.out.println("<---------------BINGOOOOOOOO---------------> \n" + "El jugador " + idJugador
+				+ " ha cantado BINGO! \n" + "El jugador " + idJugador + " es el ganador. ¡¡¡ENHORABUENA!!!");
 		try {
-			finalize();
 			System.exit(0);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}
-
-	void lessN(Integer numero) {
+	
+	public void tacharNum(Integer numero) {
 		carton.remove(numero);
 	}
+	
 }

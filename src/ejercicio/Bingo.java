@@ -1,27 +1,42 @@
 package ejercicio;
 
 import java.util.Scanner;
-import ejercicio.Bombo;
-import ejercicio.Jugador;
-import ejercicio.Presentador;
 
 public class Bingo {
-	static Scanner sc = new Scanner(System.in);
-	static int jugadores;
+	static int numjugadores;
+	static Scanner in = new Scanner(System.in);
 
 	public static void main(String[] args) {
-		Thread jugador;
+		System.out.println("<-------- COMIENZA EL BINGO -------->");
+		System.out.println("¿CUANTOS JUGADORES VAN A JUGAR?");
+		numjugadores = in.nextInt();
+		Jugador[] jugadores = new Jugador[numjugadores];
 		Bombo bombo = new Bombo();
-		System.out.println("comienza");
-		System.out.println("introduce número de jugadores:");
-		jugadores = sc.nextInt();
+		Presentador presentador = new Presentador(bombo);
 
-		for (int i = 1; i <= jugadores; i++) {
-			jugador = new Jugador(i, bombo);
-			System.out.println("jugador " + i + " listo");
+		for (int i = 0; i < numjugadores; i++) {
+			Jugador jugador = new Jugador(i, bombo);
+			jugadores[i] = jugador;
 			jugador.start();
 		}
-		Thread presentador = new Presentador(bombo);
+
 		presentador.start();
+
+		for (int i = 0; i < numjugadores; i++) {
+			try {
+				jugadores[i].join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		try {
+			presentador.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }

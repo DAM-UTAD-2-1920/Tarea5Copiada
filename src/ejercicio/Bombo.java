@@ -2,65 +2,66 @@ package ejercicio;
 
 import java.util.HashSet;
 
-public class Bombo {
-	int veces = 0;
-	int bola = 0;
-	HashSet<Integer> hash;
-	Integer last;
-	Jugador jugador;
-	final int TOTAL_BOMBO = 10;
-	int aux = Bingo.jugadores;
+class Bombo {
+	int numvecJugado = 0;
+	int hayBola = 0;
+	HashSet<Integer> bombo; 
+	Integer ultNumero;
+	Jugador jug;
+	final int TOTAL_BOMBO = 10; 
+	int aux = Bingo.numjugadores;
 
-	Bombo() {
-		hash = new HashSet<Integer>();
+	public Bombo() {
+		bombo = new HashSet<Integer>();
 	}
 
-	synchronized void get() {
-		while (bola != 0) {
+	public synchronized void sacarNum() {
+		while (hayBola != 0 /* && numvecJugado!= aux */) {
 			try {
 				this.wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		get2();
-		printB();
-		bola++;
-		notifyAll();
+		sacarNum2();
+		imprimirBombo();
+		hayBola++;
+		notify();
+
 	}
 
-	Integer get2() {
-		Integer bola = 0;
-		int cant = hash.size();
-		if (cant < TOTAL_BOMBO) {
+	public Integer sacarNum2() {
+		Integer bolita = 0;
+		int cantidadBolas = bombo.size();
+		if (cantidadBolas < TOTAL_BOMBO) {
 			do {
-				last = (int) Math.floor(Math.random() * TOTAL_BOMBO) + 1;
-				hash.add(last);
-				bola = last;
-			} while (cant == hash.size());
-			System.out.println("sale el número: " + last);
+				ultNumero = (int) Math.floor(Math.random() * TOTAL_BOMBO) + 1;
+				bombo.add(ultNumero);
+				bolita = ultNumero;
+			} while (cantidadBolas == bombo.size());
+			System.out.println("Ha salido el número: " + ultNumero);
 		} else
-			System.out.println("han salido todas las bolas ya");
-		return bola;
+			System.out.println("Ya han salido todas las bolas");
+		return bolita;
 	}
 
-	void printB() {
-		System.out.print("bolas fuera: ");
-		for (Integer integer : hash)
+	public void imprimirBombo() {
+		System.out.print("Bolas sacadas hasta el momento: ");
+		for (Integer integer : bombo)
 			System.out.print(integer + " ");
 		System.out.println();
 	}
-
-	synchronized void query() {
-		while (bola == 0) {
+	
+	public synchronized void consultar() {
+		while (hayBola == 0 ) {
 			try {
-				this.wait();
+				wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		veces++;
-		bola--;
+		numvecJugado++;
+		hayBola--;
 		notify();
 	}
 }
